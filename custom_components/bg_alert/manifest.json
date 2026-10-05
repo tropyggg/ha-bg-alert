@@ -1,7 +1,7 @@
 {
   "domain": "bg_alert",
   "name": "BG-ALERT",
-  "codeowners": [Nikolay Tropchev],
+  "codeowners": ["Nikolay Tropchev"],
   "config_flow": true,
   "documentation": "https://github.com/tropyggg/hacs-bg-alert/blob/main/README.md",
   "iot_class": "cloud_polling",
