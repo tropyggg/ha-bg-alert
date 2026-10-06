@@ -1,0 +1,5 @@
+{
+  "name": "BG-ALERT",
+  "type": "integration",
+  "homeassistant": "2026.9.4"
+}
