@@ -49,7 +49,7 @@ class BgAlertEmergencySensor(SensorEntity):
         )
 
     async def async_update(self):
-        url = "https://bg-alert.bg"
+        url = "https://bg-alert.bg/bg-alert-ws/public/alerts/atom"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, timeout=10) as response:
@@ -108,7 +108,7 @@ class BgAlertNewsSensor(SensorEntity):
         return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
 
     async def async_update(self):
-        url = "https://bg-alert.bg"
+        url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, timeout=10) as response:
