@@ -15,4 +15,4 @@
 
 
 [![Buy Me a Coffee](https://buymeacoffee.com)](https://www.buymeacoffee.com/tropy)
-[![Buy Me a Coffee](https://buymeacoffee.com)](https://buymeacoffee.com/tropy)
+[![Buy Me a Coffee](https://shields.io)](https://buymeacoffee.com/tropy)
