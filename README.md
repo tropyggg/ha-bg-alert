@@ -1,8 +1,10 @@
 <div align="center">
   <img src="custom_components/bg_alert/brand/icon.png" width="120" height="120" alt="BG-ALERT за Home Assistant">
+</div>
 
-# ⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️
+# <div align="center">⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️</div>
 
+# <div align="center">
 > **ВНИМАНИЕ:** Тази интеграция за Home Assistant в момента е в процес на активна разработка и алфа тестове! 
 > **НЕ Я ИНСТАЛИРАЙТЕ** на вашата основна (продукционна) система, тъй като кодът се променя постоянно и софтуерът може да се държи нестабилно.
 ---
