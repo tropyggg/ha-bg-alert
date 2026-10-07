@@ -1,5 +1,6 @@
 <div align="center">
   <img src="custom_components/bg_alert/brand/icon.png" width="120" height="120" alt="BG-ALERT за Home Assistant">
+
 # ⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️
 
 > **ВНИМАНИЕ:** Тази интеграция за Home Assistant в момента е в процес на активна разработка и алфа тестове! 
