@@ -1,6 +1,6 @@
 {
   "name": "BG-ALERT",
   "type": "integration",
-  "logo": "https://raw.githubusercontent.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png",
+  "logo": "https://raw.githubusercontent.com/tropyggg/ha-bg-alert/main/custom_components/bg_alert/brand/icon.png",
   "homeassistant": "2026.9.4"
 }
