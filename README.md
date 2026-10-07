@@ -13,8 +13,4 @@
 1. **Софтуерен (В разработка 🧪):** Чрез официалните RSS/Atom емисии на министерството с филтрация по региони и настройки за време на опресняване.
 2. **Хардуерен (Идея 💡):** Директно прихващане на клетъчно излъчване (Cell Broadcast) чрез външен модем.
 
-
-[![Buy Me a Coffee](https://buymeacoffee.com)](https://www.buymeacoffee.com/tropy)
-[![Buy Me a Coffee](https://shields.io)](https://buymeacoffee.com/tropy)
 <a href="https://www.buymeacoffee.com/tropy" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="tropy" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
