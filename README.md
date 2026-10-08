@@ -8,8 +8,6 @@
 
 ---
 
-<img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="220" height="220" alt="BG-ALERT за Home Assistant">
-
 ## BG-ALERT за Home Assistant
 
 Проектът има за цел да интегрира официалната българска система за известия при бедствия и аварий **BG-ALERT** в home assitant.
