@@ -19,5 +19,5 @@
 2. **Хардуерен (Идея 💡):** Директно прихващане на клетъчно излъчване (Cell Broadcast) чрез външен модем.
 
 <a href="https://www.buymeacoffee.com/tropy">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 40px !important;width: 150px !important;" >
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="40px" width="150px">
 </a>
