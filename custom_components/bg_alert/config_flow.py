@@ -4,7 +4,6 @@ from homeassistant.core import callback
 
 DOMAIN = "bg_alert"
 
-# Пълният официален списък с всички 265 общини в България, софтуерно изчистен
 MUNICIPALITIES = [
     "Всички общини",
     "Айтос", "Аксаково", "Алфатар", "Антон", "Антоново", "Априлци", "Асеновград",
@@ -17,12 +16,12 @@ MUNICIPALITIES = [
     "Ивайловград", "Иваново", "Искър", "Исперих",
     "Каварна", "Казанлък", "Кайнарджа", "Калояново", "Камено", "Каолиново", "Карлово", "Карнобат", "Каспичан", "Кирково", "Кнежа", "Ковачевци", "Козлодуй", "Копривщица", "Костенец", "Костинброд", "Котел", "Кочериново", "Кресна", "Криводол", "Кричим", "Крумовград", "Крушари", "Кубрат", "Куклен", "Кула", "Кърджали", "Кюстендил",
     "Левски", "Лесичово", "Летница", "Ловеч", "Лозница", "Лом", "Луковит", "Лъки", "Любимец",
-    "Мадан", "Maджарово", "Макреш", "Марица", "Медковец", "Мездра", "Мизия", "Минерални бани", "Мирково", "Момчилград", "Монтана", "Мъглиж",
+    "Мадан", "Маджарово", "Макреш", "Марица", "Медковец", "Мездра", "Мизия", "Минерални бани", "Мирково", "Момчилград", "Монтана", "Мъглиж",
     "Неделино", "Несебър", "Никола Козлево", "Николаево", "Никопол", "Нова Загора", "Нови пазар", "Ново село",
     "Омуртаг", "Опака", "Опан", "Оряхово",
     "Павел баня", "Павликени", "Пазарджик", "Панагюрище", "Перник", "Перущица", "Петрич", "Пещера", "Пирдоп", "Плевен", "Пловдив", "Полски Тръмбеш", "Поморие", "Попово", "Пордим", "Правец", "Приморско", "Провадия",
-    "Раднево", "Радомир", "Разград", "Разлог", "Ракитово", "Раковски", "Рила", "Родопи", "Роман", "Рудозем", "Руен", "Русе",
-    "Сатовча", "Садово", "Самоков", "Самуил", "Сандански", "Сапарева баня", "Свиленград", "Свищов", "Своге", "Севлиево", "Септември", "Силистра", "Симеоновград", "Симитли", "Ситово", "Сливен", "Сливница", "Сливо pole", "Сливо поле", "Смолян", "Смядово", "Созопол", "София (Столична)", "Средец", "Стамболийски", "Стамболово", "Стара Загора", "Стражица", "Стралджа", "Стрелча", "Струмяни", "Суворово", "Сухиндол", "Съединение",
+    "Radnevo", "Раднево", "Радомир", "Разград", "Разлог", "Ракитово", "Раковски", "Рила", "Родопи", "Роман", "Рудозем", "Руен", "Русе",
+    "Сатовча", "Садово", "Самоков", "Самуил", "Сандански", "Сапарева баня", "Свиленград", "Свищов", "Своге", "Севлиево", "Септември", "Силистра", "Симеоновград", "Симитли", "Ситово", "Сливен", "Сливница", "Сливо поле", "Смолян", "Смядово", "Созопол", "София (Столична)", "Средец", "Стамболийски", "Стамболово", "Стара Загора", "Стражица", "Стралджа", "Стрелча", "Струмяни", "Суворово", "Сухиндол", "Съединение",
     "Твърдица", "Тервел", "Тетевен", "Тополовград", "Троян", "Трън", "Трявна", "Тунджа", "Търговище",
     "Угърчин",
     "Хаджидимово", "Хайредин", "Харманли", "Хасково", "Хисаря", "Хитрино",
@@ -33,55 +32,32 @@ MUNICIPALITIES = [
 ]
 
 class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Първоначално добавяне на интеграцията с избор на режим."""
+    """Мениджър на първоначалното добавяне."""
     VERSION = 3
 
     async def async_step_user(self, user_input=None):
-        """Стъпка 1: Избор на хардуерен или софтуерен режим."""
+        """Всички настройки в един единствен прозорец за стабилност."""
+        errors = {}
         if user_input is not None:
             if user_input["mode"] == "hardware":
-                return self.async_show_form(
-                    step_id="user",
-                    data_schema=vol.Schema({
-                        vol.Required("mode", default="software"): vol.In({
-                            "software": "Софтуерен (Уеб емисии)", 
-                            "hardware": "Хардуерен (Cell Broadcast Модем)"
-                        })
-                    }),
-                    errors={"base": "hardware_in_development"}
+                errors["base"] = "hardware_in_development"
+            else:
+                return self.async_create_entry(
+                    title=f"BG-ALERT ({user_input['municipality']})", 
+                    data=user_input
                 )
-            
-            # Предаваме избора на режим към следващата софтуерна стъпка чисто
-            return await self.async_step_software_config()
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema({
-                vol.Required("mode", default="software"): vol.In({
-                    "software": "Софтуерен (Уеб емисии)", 
-                    "hardware": "Хардуерен (Cell Broadcast Модем)"
-                })
-            })
-        )
+        # Единен софтуерен формуляр
+        data_schema = vol.Schema({
+            vol.Required("mode", default="software"): vol.In({
+                "software": "Софтуерен (Уеб емисии)", 
+                "hardware": "Хардуерен (Cell Broadcast Модем)"
+            }),
+            vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
+            vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
+        })
 
-    async def async_step_software_config(self, user_input=None):
-        """Стъпка 2: Избор на община за софтуерния режим."""
-        if user_input is not None:
-            # Записваме пълните данни наведнъж при финализиране
-            config_data = {
-                "mode": "software",
-                "municipality": user_input["municipality"],
-                "scan_interval": user_input["scan_interval"]
-            }
-            return self.async_create_entry(title=f"BG-ALERT ({config_data['municipality']})", data=config_data)
-
-        return self.async_show_form(
-            step_id="software_config",
-            data_schema=vol.Schema({
-                vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
-                vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
-            })
-        )
+        return self.async_show_form(step_id="user", data_schema=data_schema, errors=errors)
 
     @staticmethod
     @callback
@@ -100,7 +76,7 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
 
         current_municipality = self.config_entry.options.get(
             "municipality", 
-            self.config_entry.data.get("municipality", self.config_entry.data.get("region", "Всички общини"))
+            self.config_entry.data.get("municipality", "Всички общини")
         )
         
         current_interval = self.config_entry.options.get(
