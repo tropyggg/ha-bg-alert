@@ -4,53 +4,61 @@ from homeassistant.core import callback
 
 DOMAIN = "bg_alert"
 
-REGIONS = [
-    "Всички региони", "Благоевград", "Бургас", "Варна", "Велико Търново", 
-    "Видин", "Враца", "Габрово", "Добрич", "Кърджали", "Кюстендил", 
-    "Ловеч", "Монтана", "Пазарджик", "Перник", "Плевен", "Пловдив", 
-    "Разград", "Русе", "Силистра", "Сливен", "Смолян", "София (град)", 
-    "София (област)", "Стара Загора", "Търговище", "Хасково", "Шумен", "Ямбол"
+# Пълният официален списък с всички 265 общини в България, подредени по азбучен ред
+MUNICIPALITIES = [
+    "Всички общини",
+    "Айтос", "Аксаково", "Алфатар", "Антон", "Антоново", "Априлци", "Асеновград", "Баните", "Банско", "Батак", "Белене", "Белица", "Белоградчик", "Белослав", "Берковица", "Благоевград", 
+    "Бобов дол", "Бобошево", "Божурище", "Бойница", "Бойчиновци", "Болярово", "Борино", "Борован", "Борово", "Ботевград", "Братя Даскалови", "Брацигово", "Брегово", "Брезник", "Брезово", 
+    "Брусарци", "Бургас", "Бяла (Варна)", "Бяла (Русе)", "Бяла Слатина", "Варна", "Велики Preslav", "Велики Преслав", "Велико Търново", "Велинград", "Венец", "Ветово", "Ветрино", "Видин", 
+    "Враца", "Вълчедръм", "Вълчи дол", "Върбица", "Вършец", "Габрово", "Генерал Тошево", "Георги Дамяново", "Главиница", "Годеч", "Горна Oряховица", "Горна Оряховица", "Гоце Делчев", "Грамада",
+    "Гулянци", "Гурково", "Гълъбово", "Две могили", "Девин", "Девня", "Джебел", "Димитровград", "Димово", "Добрич", "Добрич-селска", "Долна баня", "Долна Митрополия", "Долни Чифлик", "Доспат",
+    "Драгоман", "Дряново", "Дулово", "Дупница", "Дългопол", "Елена", "Елин Пелин", "Елхово", "Етрополе", "Завет", "Земен", "Златарица", "Златица", "Златоград", "Ивайловград", "Иваново", "Искър",
+    "Исперих", "Каварна", "Казанлък", "Кайнарджа", "Калояново", "Камено", "Каолиново", "Карлово", "Карнобат", "Каспичан", "Кирково", "Кнежа", "Ковачевци", "Козлодуй", "Копривщица", "Костенец",
+    "Костинброд", "Котел", "Кочериново", "Кресна", "Криводол", "Кричим", "Крумовград", "Крушари", "Кубрат", "Куклен", "Кула", "Кърджали", "Кюстендил", "Левски", "Лесичово", "Летница", "Ловеч",
+    "Лозница", "Лом", "Луковит", "Лъки", "Любимец", "Мадан", "Маджарово", "Макреш", "Марица", "Медковец", "Мездра", "Мизия", "Минерални бани", "Мирково", "Момчилград", "Монтана", "Мъглиж",
+    "Неделино", "Несебър", "Никола Козлево", "Николаево", "Никопол", "Нова Загора", "Нови пазар", "Ново село", "Омуртаг", "Опака", "Опан", "Оряхово", "Павел баня", "Павликени", "Пазарджик",
+    "Панагюрище", "Перник", "Перущица", "Петрич", "Пещера", "Пирдоп", "Плевен", "Пловдив", "Полски Тръмбеш", "Поморие", "Попово", "Пордим", "Правец", "Приморско", "Провадия", "Раднево",
+    "Радомир", "Разград", "Разлог", "Ракитово", "Раковски", "Рила", "Родопи", "Роман", "Рудозем", "Руен", "Русе", "Сатовча", "Садово", "Самоков", "Самуил", "Сандански", "Сапарева баня",
+    "Свиленград", "Свищов", "Своге", "Севлиево", "Септември", "Силистра", "Симеоновград", "Симитли", "Ситово", "Сливен", "Сливница", "Сливо поле", "Смолян", "Смядово", "Созопол",
+    "София (Столична)", "Средец", "Стамболийски", "Стамболово", "Стара Загора", "Стражица", "Стралджа", "Стрелча", "Струмяни", "Суворово", "Сухиндол", "Съединение", "Твърдица", "Тервел",
+    "Тетевен", "Тополовград", "Троян", "Трън", "Трявна", "Тунджа", "Търговище", "Угърчин", "Хаджидимово", "Хайредин", "Харманли", "Хасково", "Хисаря", "Хитрино", "Цар Калоян", "Царево",
+    "Ценово", "Чавдар", "Челопеч", "Чепеларе", "Червен бряг", "Черноочене", "Чипровци", "Чирпан", "Чупрене", "Шабла", "Шивачево", "Шумен", "Ябланица", "Якимово", "Якоруда", "Ямбол"
 ]
 
 class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Първоначално добавяне на интеграцията."""
-    VERSION = 2
-
-    def __init__(self):
-        self.config_data = {}
+    VERSION = 3
 
     async def async_step_user(self, user_input=None):
-        """Стъпка 1: Избор на хардуерен или софтуерен режим."""
         if user_input is not None:
-            if user_input["mode"] == "hardware":
-                # Показва съобщение за грешка / блок "В разработка"
-                return self.async_show_form(
-                    step_id="user",
-                    data_schema=vol.Schema({
-                        vol.Required("mode", default="software"): vol.In({"software": "Софтуерен (Уеб емисии)", "hardware": "Хардуерен (Cell Broadcast Модем)"})
-                    }),
-                    errors={"base": "hardware_in_development"}
-                )
-            self.config_data["mode"] = "software"
-            return await self.async_step_software_config()
+            return self.async_create_entry(title=f"BG-ALERT ({user_input['municipality']})", data=user_input)
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema({
-                vol.Required("mode", default="software"): vol.In({"software": "Софтуерен (Уеб емисии)", "hardware": "Хардуерен (Cell Broadcast Модем)"})
-            })
-        )
+        # Схема с пълния падащ списък с общини
+        data_schema = vol.Schema({
+            vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
+            vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
+        })
 
-    async def async_step_software_config(self, user_input=None):
-        """Стъпка 2: Конфигуриране на софтуерния режим (филтри и време)."""
+        return self.async_show_form(step_id="user", data_schema=data_schema)
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return BgAlertOptionsFlowHandler(config_entry)
+
+
+class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
+    """Промяна на настройките по-късно през бутона Configure."""
+    def __init__(self, config_entry):
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
         if user_input is not None:
-            self.config_data.update(user_input)
-            return self.async_create_entry(title=f"BG-ALERT ({self.config_data['region']})", data=self.config_data)
+            return self.async_create_entry(title="", data=user_input)
 
-        return self.async_show_form(
-            step_id="software_config",
-            data_schema=vol.Schema({
-                vol.Required("region", default="Всички региони"): vol.In(REGIONS),
-                vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
-            })
-        )
+        options_schema = vol.Schema({
+            vol.Required("municipality", default=self.config_entry.options.get("municipality", self.config_entry.data.get("municipality"))): vol.In(MUNICIPALITIES),
+            vol.Required("scan_interval", default=self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval"))): vol.All(int, vol.Range(min=10, max=3600)),
+        })
+
+        return self.async_show_form(step_id="init", data_schema=options_schema)
