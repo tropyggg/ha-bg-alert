@@ -90,9 +90,20 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        # ПОПРАВКА: Слагаме защита - ако няма municipality, софтуерът проверява за стария region, а ако и него го няма, просто избира "Всички общини"
+        current_municipality = self.config_entry.options.get(
+            "municipality", 
+            self.config_entry.data.get("municipality", self.config_entry.data.get("region", "Всички общини"))
+        )
+        
+        current_interval = self.config_entry.options.get(
+            "scan_interval", 
+            self.config_entry.data.get("scan_interval", 30)
+        )
+
         options_schema = vol.Schema({
-            vol.Required("municipality", default=self.config_entry.options.get("municipality", self.config_entry.data.get("municipality"))): vol.In(MUNICIPALITIES),
-            vol.Required("scan_interval", default=self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval"))): vol.All(int, vol.Range(min=10, max=3600)),
+            vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),
+            vol.Required("scan_interval", default=current_interval): vol.All(int, vol.Range(min=10, max=3600)),
         })
 
         return self.async_show_form(step_id="init", data_schema=options_schema)
