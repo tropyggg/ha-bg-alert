@@ -2,7 +2,6 @@
   <img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="120" height="120" alt="BG-ALERT за Home Assistant">
 
 # ⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️
-</div>
 
 > **ВНИМАНИЕ:** Тази интеграция за Home Assistant в момента е в процес на активна разработка и алфа тестове! 
 > **НЕ Я ИНСТАЛИРАЙТЕ** на вашата основна (продукционна) система, тъй като кодът се променя постоянно и софтуерът може да се държи нестабилно.
