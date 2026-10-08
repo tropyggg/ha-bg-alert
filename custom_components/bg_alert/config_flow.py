@@ -26,20 +26,54 @@ MUNICIPALITIES = [
 ]
 
 class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Първоначално добавяне на интеграцията."""
+    """Първоначално добавяне на интеграцията с избор на режим."""
     VERSION = 3
 
+    def __init__(self):
+        self.config_data = {}
+
     async def async_step_user(self, user_input=None):
+        """Стъпка 1: Избор на хардуерен или софтуерен режим."""
         if user_input is not None:
-            return self.async_create_entry(title=f"BG-ALERT ({user_input['municipality']})", data=user_input)
+            if user_input["mode"] == "hardware":
+                # Изкарва грешката от strings.json и блокира преминаването напред
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=vol.Schema({
+                        vol.Required("mode", default="software"): vol.In({
+                            "software": "Софтуерен (Уеб емисии)", 
+                            "hardware": "Хардуерен (Cell Broadcast Модем)"
+                        })
+                    }),
+                    errors={"base": "hardware_in_development"}
+                )
+            
+            self.config_data["mode"] = "software"
+            return await self.async_step_software_config()
 
-        # Схема с пълния падащ списък с общини
-        data_schema = vol.Schema({
-            vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
-            vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
-        })
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema({
+                vol.Required("mode", default="software"): vol.In({
+                    "software": "Софтуерен (Уеб емисии)", 
+                    "hardware": "Хардуерен (Cell Broadcast Модем)"
+                })
+            })
+        )
 
-        return self.async_show_form(step_id="user", data_schema=data_schema)
+    async def async_step_software_config(self, user_input=None):
+        """Стъпка 2: Избор на община и интервал за софтуерния режим."""
+        if user_input is not None:
+            self.config_data.update(user_input)
+            return self.async_create_entry(title=f"BG-ALERT ({self.config_data['municipality']})", data=self.config_data)
+
+        return self.async_show_form(
+            step_id="software_config",
+            data_schema=vol.Schema({
+                vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
+                vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
+            })
+        )
 
     @staticmethod
     @callback
