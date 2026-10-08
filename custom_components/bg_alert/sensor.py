@@ -16,16 +16,16 @@ HEADERS = {
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Създаване на трите сензора на база избраните настройки."""
-    region = entry.data.get("region", "Всички региони")
+    """Създаване на трите сензора на база избраната община."""
+    # ПРАВИЛНО: Вече взимаме municipality от настройките (със застраховка, ако липсва)
+    municipality = entry.data.get("municipality", entry.options.get("municipality", "Всички общини"))
     scan_interval = entry.data.get("scan_interval", 30)
     scan_interval_td = timedelta(seconds=scan_interval)
 
-    # Всички сензори се създават едновременно и без ограничения
     entities = [
-        BgAlertEmergencySensor(entry.entry_id, region, scan_interval_td),
-        BgAlertNewsSensor(entry.entry_id, region, scan_interval_td),
-        BgAlertAllNewsSensor(entry.entry_id, region, scan_interval_td)
+        BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
+        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
+        BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td)
     ]
 
     async_add_entities(entities, update_before_add=True)
@@ -33,16 +33,16 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 class BgAlertEmergencySensor(SensorEntity):
     """Сензор 1: Регионални спешни сигнали за реални опасности."""
-    def __init__(self, entry_id, region, scan_interval):
+    def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
-        self._region = region
+        self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
         self._attr_name = "Спешни сигнали"
-        self._attr_unique_id = f"bg_alert_emergency_{region.lower().replace(' ', '_')}"
+        self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = "Няма активни опасности"
-        self._attributes = {"регион": region, "съобщение": "Всичко е наред"}
+        self._attributes = {"община": municipality, "съобщение": "Всичко е наред"}
 
     @property
     def state(self): return self._state
@@ -54,7 +54,7 @@ class BgAlertEmergencySensor(SensorEntity):
     def device_info(self):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name=f"BG-ALERT ({self._region})",
+            name=f"BG-ALERT ({self._municipality})",
             manufacturer="Министерство на вътрешните работи",
         )
 
@@ -73,7 +73,8 @@ class BgAlertEmergencySensor(SensorEntity):
                 latest_entry = entries[-1]
                 title = latest_entry.find("title").text.strip() if latest_entry.find("title") else ""
                 
-                if self._region == "Всички региони" or self._region.lower() in title.lower():
+                # Филтриране по община
+                if self._municipality == "Всички общини" or self._municipality.lower() in title.lower():
                     self._state = "АКТИВНА ТРЕВОГА"
                     self._attributes["съобщение"] = title
                 else:
@@ -85,22 +86,23 @@ class BgAlertEmergencySensor(SensorEntity):
             self.reset()
 
     def reset(self):
+        self._state = "Няма active опасности" if self._state == "АКТИВНА ТРЕВОГА" else "Няма активни опасности"
         self._state = "Няма активни опасности"
         self._attributes["съобщение"] = "Всичко е наред"
 
 
 class BgAlertNewsSensor(SensorEntity):
     """Сензор 2: Регионални Новини и Тестове (Само за ДНЕШНИ събития)."""
-    def __init__(self, entry_id, region, scan_interval):
+    def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
-        self._region = region
+        self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
         self._attr_name = "Новини и Тестове"
-        self._attr_unique_id = f"bg_alert_news_{region.lower().replace(' ', '_')}"
+        self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = "Няма днешни тестове"
-        self._attributes = {"регион": region, "информация": "Няма днешни известия"}
+        self._attributes = {"община": municipality, "информация": "Няма днешни известия"}
 
     @property
     def state(self): return self._state
@@ -113,7 +115,7 @@ class BgAlertNewsSensor(SensorEntity):
         return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
 
     async def async_update(self):
-        url = "https://bg-alert.bg"
+        url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=HEADERS, timeout=10) as response:
@@ -134,9 +136,10 @@ class BgAlertNewsSensor(SensorEntity):
                     if pub_date_str:
                         pub_date = dt_util.parse_datetime(pub_date_str)
                         
-                        # Проверяваме дали новината е от последните 24 часа
+                        # Проверка за събития от последните 24 часа
                         if pub_date and (now - pub_date) < timedelta(days=1):
-                            if self._region == "Всички региони" or self._region.lower() in title.lower():
+                            # Прецизен регионален филтър по име на община
+                            if self._municipality == "Всички общини" or self._municipality.lower() in title.lower():
                                 today_alert_found = True
                                 self._attributes["информация"] = title
                                 
@@ -157,7 +160,7 @@ class BgAlertNewsSensor(SensorEntity):
 
 class BgAlertAllNewsSensor(SensorEntity):
     """Сензор 3: Пълен национален архив с изброени новини."""
-    def __init__(self, entry_id, region, scan_interval):
+    def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
