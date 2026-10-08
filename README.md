@@ -1,5 +1,5 @@
 
-<img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="120" height="120" alt="BG-ALERT за Home Assistant">
+<img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="100" height="100" alt="BG-ALERT за Home Assistant">
 
 # ⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️
 
@@ -8,7 +8,7 @@
 
 ---
 
-<img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="120" height="120" alt="BG-ALERT за Home Assistant">
+<img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="220" height="220" alt="BG-ALERT за Home Assistant">
 
 ## BG-ALERT за Home Assistant
 
