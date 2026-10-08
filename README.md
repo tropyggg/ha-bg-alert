@@ -1,3 +1,4 @@
+
 <img src="https://github.com/tropyggg/ha-bg-alert/blob/main/custom_components/bg_alert/brand/icon.png" width="10" height="10" alt="BG-ALERT за Home Assistant">
 
 # ⚠️ В РАЗРАБОТКА / IN DEVELOPMENT ⚠️
