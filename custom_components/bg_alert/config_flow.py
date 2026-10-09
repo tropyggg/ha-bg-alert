@@ -26,32 +26,13 @@ MUNICIPALITIES = [
     "Червен бряг", "Черноочене", "Чипровци", "Чирпан", "Чупрене", "Шабла", "Шивачево", "Шумен", "Ябланица", "Якимово", "Якоруда", "Ямбол"
 ]
 
-class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
-    """Промяна на настройките през бутона Configure."""
+class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Мащабен двустъпков мениджър по новия архитектурен план."""
+    VERSION = 3
 
-    async def async_step_init(self, user_input=None):
-        if user_input is not None:
-            # Нативно използваме self.config_entry без ръчен __init__
-            new_title = user_input.get("municipality", self.config_entry.title)
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
-                title=new_title
-            )
-            return self.async_create_entry(title="", data=user_input)
-
-        mode = self.config_entry.data.get("mode", "regional")
-        if mode == "archive":
-            return self.async_show_form(step_id="init", data_schema=vol.Schema({}))
-
-        current_municipality = self.config_entry.options.get("municipality", self.config_entry.data.get("municipality", "Всички общини"))
-        current_interval = self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval", 30))
-
-        options_schema = vol.Schema({
-            vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),
-            vol.Required("scan_interval", default=current_interval): vol.All(int, vol.Range(min=10, max=3600)),
-        })
-
-        return self.async_show_form(step_id="init", data_schema=options_schema)
+    def __init__(self) -> None:
+        super().__init__()
+        self.config_data = {}
 
     async def async_step_user(self, user_input=None):
         """Стъпка 1: Потребителят избира точно какъв софтуерен или хардуерен модул иска."""
