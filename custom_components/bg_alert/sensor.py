@@ -58,7 +58,7 @@ class BgAlertEmergencySensor(SensorEntity):
     def device_info(self):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name=f"BG-ALERT ({self._municipality})",
+            name=self._municipality,
             manufacturer="Министерство на вътрешните работи",
         )
 
@@ -114,7 +114,11 @@ class BgAlertNewsSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry_id)},
+            name=self._municipality,
+            manufacturer="Министерство на вътрешните работи",
+        )
 
     async def async_update(self):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
@@ -180,7 +184,7 @@ class BgAlertAllNewsSensor(SensorEntity):
     def device_info(self):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name="BG-ALERT (Национален архив)",
+            name="Национален архив",
             manufacturer="Министерство на вътрешните работи",
         )
 
