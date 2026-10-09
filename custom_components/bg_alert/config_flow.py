@@ -36,12 +36,12 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 3
 
     async def async_step_user(self, user_input=None):
-        """Всички настройки в един общ прозорец за пълна софтуерна стабилност."""
         errors = {}
         if user_input is not None:
             if user_input["mode"] == "hardware":
                 errors["base"] = "hardware_in_development"
             else:
+                # Вземаме избора и го заключваме като софтуерна константа
                 return self.async_create_entry(
                     title=f"BG-ALERT ({user_input['municipality']})", 
                     data=user_input
@@ -57,36 +57,3 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         })
 
         return self.async_show_form(step_id="user", data_schema=data_schema, errors=errors)
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        return BgAlertOptionsFlowHandler(config_entry)
-
-
-class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
-    """Промяна на настройките през бутона Configure."""
-    def __init__(self, config_entry):
-        # ПОПРАВКА: Използваме _entry вместо запазената дума config_entry
-        self._entry = config_entry
-
-    async def async_step_init(self, user_input=None):
-        if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
-
-        current_municipality = self._entry.options.get(
-            "municipality", 
-            self._entry.data.get("municipality", "Всички общини")
-        )
-        
-        current_interval = self._entry.options.get(
-            "scan_interval", 
-            self._entry.data.get("scan_interval", 30)
-        )
-
-        options_schema = vol.Schema({
-            vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),
-            vol.Required("scan_interval", default=current_interval): vol.All(int, vol.Range(min=10, max=3600)),
-        })
-
-        return self.async_show_form(step_id="init", data_schema=options_schema)
