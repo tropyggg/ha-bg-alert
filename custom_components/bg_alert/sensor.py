@@ -21,7 +21,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
-    # Директно създаваме и трите сензора - софтуерно чисто и бързо
+    # Първите два сензора са изцяло регионални и се създават за всяка инстанция
     entities = [
         BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
         BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
@@ -40,6 +40,7 @@ class BgAlertEmergencySensor(SensorEntity):
         self._attr_has_entity_name = True
         self._attr_translation_key = "emergency_signals"
         self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
+        
         self._state = "Няма активни опасности"
         self._attributes = {"община": municipality, "съобщение": "Всичко е наред"}
 
@@ -54,7 +55,7 @@ class BgAlertEmergencySensor(SensorEntity):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             name=f"BG-ALERT ({self._municipality})",
-            manufacturer="Министерство на вътрешните работи",
+            manufacturer="Министерство на вътрешните врати",
         )
 
     async def async_update(self):
@@ -97,6 +98,7 @@ class BgAlertNewsSensor(SensorEntity):
         self._attr_has_entity_name = True
         self._attr_translation_key = "news_and_tests"
         self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
+        
         self._state = "Няма днешни тестове"
         self._attributes = {"община": municipality, "информация": "Няма днешни известия"}
 
@@ -153,12 +155,15 @@ class BgAlertNewsSensor(SensorEntity):
 
 
 class BgAlertAllNewsSensor(SensorEntity):
-    """Сензор 3: Единствен глобален архив новини."""
+    """Сензор 3: Глобален национален архив новини (Без софтуерно умножение)."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
-        self._attr_unique_id = f"bg_alert_all_news_archive_{entry_id}"
+        
+        # ПРАВИЛНО: Заключваме ID-то към общината на инстанцията, за да спре дублирането при преинсталация
+        self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_')}"
+        
         self._state = 0
         self._attributes = {"целият_списък": []}
 
