@@ -17,9 +17,8 @@ HEADERS = {
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Създаване на трите сензора на база избраната община."""
-    # ПРАВИЛНО: Вече взимаме municipality от настройките (със застраховка, ако липсва)
-    municipality = entry.data.get("municipality", entry.options.get("municipality", "Всички общини"))
-    scan_interval = entry.data.get("scan_interval", 30)
+    municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
+    scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
     entities = [
@@ -32,7 +31,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class BgAlertEmergencySensor(SensorEntity):
-    """Сензор 1: Регионални спешни сигнали за реални опасности."""
+    """Сензор 1: Регионални спешни сигнали за реални опасности (alerts фийд)."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
@@ -62,7 +61,7 @@ class BgAlertEmergencySensor(SensorEntity):
         url = "https://bg-alert.bg/bg-alert-ws/public/alerts/atom"
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=HEADERS, timeout=10) as response:
+                async with session.get(url, headers=HEADERS, timeout=5) as response:
                     if response.status != 200: return
                     xml_data = await response.text()
 
@@ -73,7 +72,6 @@ class BgAlertEmergencySensor(SensorEntity):
                 latest_entry = entries[-1]
                 title = latest_entry.find("title").text.strip() if latest_entry.find("title") else ""
                 
-                # Филтриране по община
                 if self._municipality == "Всички общини" or self._municipality.lower() in title.lower():
                     self._state = "АКТИВНА ТРЕВОГА"
                     self._attributes["съобщение"] = title
@@ -86,13 +84,12 @@ class BgAlertEmergencySensor(SensorEntity):
             self.reset()
 
     def reset(self):
-        self._state = "Няма active опасности" if self._state == "АКТИВНА ТРЕВОГА" else "Няма активни опасности"
         self._state = "Няма активни опасности"
         self._attributes["съобщение"] = "Всичко е наред"
 
 
 class BgAlertNewsSensor(SensorEntity):
-    """Сензор 2: Регионални Новини и Тестове (Само за ДНЕШНИ събития)."""
+    """Сензор 2: Регионални Новини и Тестове за ДНЕС (news фийд)."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
@@ -118,7 +115,7 @@ class BgAlertNewsSensor(SensorEntity):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=HEADERS, timeout=10) as response:
+                async with session.get(url, headers=HEADERS, timeout=5) as response:
                     if response.status != 200: return
                     xml_data = await response.text()
 
@@ -136,9 +133,7 @@ class BgAlertNewsSensor(SensorEntity):
                     if pub_date_str:
                         pub_date = dt_util.parse_datetime(pub_date_str)
                         
-                        # Проверка за събития от последните 24 часа
                         if pub_date and (now - pub_date) < timedelta(days=1):
-                            # Прецизен регионален филтър по име на община
                             if self._municipality == "Всички общини" or self._municipality.lower() in title.lower():
                                 today_alert_found = True
                                 self._attributes["информация"] = title
@@ -159,13 +154,14 @@ class BgAlertNewsSensor(SensorEntity):
 
 
 class BgAlertAllNewsSensor(SensorEntity):
-    """Сензор 3: Пълен национален архив с изброени новини."""
+    """Сензор 3: Пълен национален архив с динамично уникално ID на база избраната община."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
+        self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
         self._attr_name = "Пълен архив новини"
-        self._attr_unique_id = f"bg_alert_all_news_archive"
+        self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = 0
         self._attributes = {"целият_списък": []}
@@ -184,7 +180,7 @@ class BgAlertAllNewsSensor(SensorEntity):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=HEADERS, timeout=10) as response:
+                async with session.get(url, headers=HEADERS, timeout=5) as response:
                     if response.status != 200: return
                     xml_data = await response.text()
 

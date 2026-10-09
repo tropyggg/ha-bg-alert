@@ -10,7 +10,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Зареждане на интеграцията при стартиране."""
     hass.data.setdefault(DOMAIN, {})
     
-    # Регистрация на слушател (Listener), който следи за натискане на бутона Configure
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
     
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -24,6 +23,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Автоматично рестартиране на сензорите, когато потребителят смени общината."""
-    _LOGGER.info("Настройките на BG-ALERT бяха променени. Презареждане на сензорите...")
+    """Автоматично рестартиране на сензорите и обновяване на името на добавката на екрана."""
+    _LOGGER.info("Настройките на BG-ALERT бяха променени. Презареждане...")
+    
+    new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
+    
+    hass.config_entries.async_update_entry(entry, title=f"BG-ALERT ({new_municipality})")
+    
     await hass.config_entries.async_reload(entry.entry_id)
