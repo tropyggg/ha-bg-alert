@@ -1,0 +1,48 @@
+{
+  "config": {
+    "error": {
+      "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose software mode."
+    },
+    "step": {
+      "user": {
+        "title": "Select BG-ALERT Mode",
+        "description": "Choose how the integration should receive hazard data.",
+        "data": {
+          "mode": "Operation Mode"
+        }
+      },
+      "software_config": {
+        "title": "Software Mode Setup",
+        "description": "Select your municipality for precise regional alerts.",
+        "data": {
+          "municipality": "Municipality to monitor",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Change Settings",
+        "data": {
+          "municipality": "Municipality to monitor",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "emergency_signals": {
+        "name": "Emergency Alerts"
+      },
+      "news_and_tests": {
+        "name": "News and Tests"
+      },
+      "global_archive": {
+        "name": "Full News Archive"
+      }
+    }
+  }
+}
