@@ -27,37 +27,40 @@ MUNICIPALITIES = [
 ]
 
 class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Двустъпков мениджър за първоначално добавяне."""
+    """Мащабен двустъпков мениджър по новия архитектурен план."""
     VERSION = 3
 
     def __init__(self) -> None:
-        """Инициализация на междинния речник."""
         super().__init__()
         self.config_data = {}
 
     async def async_step_user(self, user_input=None):
-        """Стъпка 1: Пита САМО за Хардуерен или Софтуерен вариант."""
+        """Стъпка 1: Потребителят избира точно какъв софтуерен или хардуерен модул иска."""
         errors = {}
         if user_input is not None:
             if user_input["mode"] == "hardware":
                 errors["base"] = "hardware_in_development"
+            elif user_input["mode"] == "archive":
+                self.config_data = {"mode": "archive", "municipality": "Национален", "scan_interval": 60}
+                return self.async_create_entry(title="BG-ALERT (Национален архив новини)", data=self.config_data)
             else:
-                self.config_data["mode"] = "software"
+                self.config_data["mode"] = "regional"
                 return await self.async_step_software_config()
 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required("mode", default="software"): vol.In({
-                    "software": "Софтуерен (Уеб емисии)", 
-                    "hardware": "Хардуерен (Cell Broadcast Модем)"
+                vol.Required("mode", default="regional"): vol.In({
+                    "regional": "Регионален сензор за опасности (Избор на община)",
+                    "archive": "Национален списък и архив новини (Глобален)",
+                    "hardware": "Хардуерен режим (Cell Broadcast радио модем)"
                 })
             }),
             errors=errors
         )
 
     async def async_step_software_config(self, user_input=None):
-        """Стъпка 2: Показва общините само след софтуерен режим."""
+        """Стъпка 2: Избор на град (Появява се САМО за регионалния режим)."""
         if user_input is not None:
             self.config_data.update(user_input)
             return self.async_create_entry(
@@ -81,25 +84,19 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
     """Промяна на настройките през бутона Configure."""
-    
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Инициализация на родителския клас БЕЗ пренаписване на защитената дума."""
         super().__init__()
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        # Ползваме вградения self.config_entry нативно (Home Assistant сам го пази)
-        current_municipality = self.config_entry.options.get(
-            "municipality", 
-            self.config_entry.data.get("municipality", "Всички общини")
-        )
-        
-        current_interval = self.config_entry.options.get(
-            "scan_interval", 
-            self.config_entry.data.get("scan_interval", 30)
-        )
+        mode = self.config_entry.data.get("mode", "regional")
+        if mode == "archive":
+            return self.async_show_form(step_id="init", data_schema=vol.Schema({}))
+
+        current_municipality = self.config_entry.options.get("municipality", self.config_entry.data.get("municipality", "Всички общини"))
+        current_interval = self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval", 30))
 
         options_schema = vol.Schema({
             vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),

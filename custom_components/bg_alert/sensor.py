@@ -16,16 +16,21 @@ HEADERS = {
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Създаване на трите сензора на база избраната община."""
+    """Създаване на сензори на база избрания от потребителя под-модул."""
+    mode = entry.data.get("mode", "regional")
     municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
-    entities = [
-        BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td)
-    ]
+    entities = []
+
+    if mode == "archive":
+        _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
+        entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
+    else:
+        _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
 
     async_add_entities(entities, update_before_add=True)
 
@@ -154,13 +159,13 @@ class BgAlertNewsSensor(SensorEntity):
 
 
 class BgAlertAllNewsSensor(SensorEntity):
-    """Сензор 3: Пълен национален архив новини."""
-    def __init__(self, entry_id, municipality, scan_interval):
+    """Сензор 3: Глобален национален архив новини (Добавя се отделно)."""
+    def __init__(self, entry_id, scan_interval):
         self._entry_id = entry_id
+        self._scan_interval = scan_interval
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
-        # Динамично Unique ID обвързано с общината на съответната инстанция, за да спре грешката already exists
-        self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
+        self._attr_unique_id = "bg_alert_national_archive_module"
         
         self._state = 0
         self._attributes = {"целият_списък": []}
@@ -173,7 +178,11 @@ class BgAlertAllNewsSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry_id)},
+            name="BG-ALERT (Национален архив)",
+            manufacturer="Министерство на вътрешните работи",
+        )
 
     async def async_update(self):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
