@@ -3,7 +3,7 @@
   "name": "BG-ALERT",
   "codeowners": ["@tropyggg"],
   "config_flow": true,
-  "documentation": "https://github.com/tropyggg/hacs-bg-alert/blob/main/README.md",
+  "documentation": "https://github.com/tropyggg/ha-bg-alert/blob/main/README.md",
   "iot_class": "cloud_polling",
   "version": "1.0.2",
   "requirements": ["beautifulsoup4==4.12.3"]
