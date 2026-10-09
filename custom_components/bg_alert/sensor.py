@@ -16,22 +16,38 @@ HEADERS = {
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Създаване на трите сензора на база избраната община."""
+    """Създаване на сензорите без излишно дублиране на глобалния архив."""
     municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
+    # Първите два сензора (регионалните) винаги се създават за всяка нова община
     entities = [
         BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td)
+        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td)
     ]
+
+    # СОФТУЕРНА ЗАЩИТА: Проверяваме дали в паметта на Home Assistant вече има регистриран глобален архив
+    # Ако това е първа инстанция, създаваме Сензор 3. Ако е втора/трета - прескачаме го!
+    all_entries = hass.config_entries.async_entries(DOMAIN)
+    is_first_instance = True
+    
+    for existing_entry in all_entries:
+        if existing_entry.entry_id != entry.entry_id and existing_entry.state.value == "loaded":
+            is_first_instance = False
+            break
+
+    if is_first_instance:
+        _LOGGER.info("Първа инстанция на BG-ALERT: Създаване на глобален архив новини.")
+        entities.append(BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td))
+    else:
+        _LOGGER.info("Глобалният архив вече съществува в друга инстанция. Прескачане на дублирането.")
 
     async_add_entities(entities, update_before_add=True)
 
 
 class BgAlertEmergencySensor(SensorEntity):
-    """Сензор 1: Регионални спешни сигнали за реални опасности (alerts фийд)."""
+    """Сензор 1: Регионални спешни сигнали за реални опасности."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
@@ -89,7 +105,7 @@ class BgAlertEmergencySensor(SensorEntity):
 
 
 class BgAlertNewsSensor(SensorEntity):
-    """Сензор 2: Регионални Новини и Тестове за ДНЕС (news фийд)."""
+    """Сензор 2: Регионални Новини и Тестове за ДНЕС."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
@@ -154,14 +170,13 @@ class BgAlertNewsSensor(SensorEntity):
 
 
 class BgAlertAllNewsSensor(SensorEntity):
-    """Сензор 3: Пълен национален архив с динамично уникално ID на база избраната община."""
+    """Сензор 3: ЕДИНСТВЕН национален архив новини за цялата система (Няма дублиране)."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
-        self._municipality = municipality
-        self._scan_interval = scan_interval
         self._attr_has_entity_name = True
         self._attr_name = "Пълен архив новини"
-        self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
+        # Фиксирано ID: Така системата знае, че това е единственият глобален архив
+        self._attr_unique_id = "bg_alert_all_news_archive_global"
         
         self._state = 0
         self._attributes = {"целият_списък": []}
