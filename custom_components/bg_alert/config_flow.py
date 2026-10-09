@@ -86,9 +86,15 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
     """Промяна на настройките през бутона Configure."""
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         super().__init__()
+        self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
+            new_title = user_input.get("municipality", self.config_entry.title)
+            self.hass.config_entries.async_update_entry(
+                self.config_entry,
+                title=new_title
+            )
             return self.async_create_entry(title="", data=user_input)
 
         mode = self.config_entry.data.get("mode", "regional")
