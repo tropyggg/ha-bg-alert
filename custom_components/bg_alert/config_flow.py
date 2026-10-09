@@ -30,27 +30,49 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Мениджър на първоначалното добавяне."""
     VERSION = 3
 
+    def __init__(self) -> None:
+        """Инициализация на междинната софтуерна памет."""
+        super().__init__()
+        self.config_data = {}
+
     async def async_step_user(self, user_input=None):
+        """Стъпка 1: Избор САМО на хардуерен или софтуерен режим."""
         errors = {}
         if user_input is not None:
             if user_input["mode"] == "hardware":
                 errors["base"] = "hardware_in_development"
             else:
-                return self.async_create_entry(
-                    title=f"BG-ALERT ({user_input['municipality']})", 
-                    data=user_input
-                )
+                self.config_data["mode"] = "software"
+                # ПРАВИЛНО: Пренасочваме към следващия самостоятелен екран
+                return await self.async_step_software_config()
 
-        data_schema = vol.Schema({
-            vol.Required("mode", default="software"): vol.In({
-                "software": "Софтуерен (Уеб емисии)", 
-                "hardware": "Хардуерен (Cell Broadcast Модем)"
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema({
+                vol.Required("mode", default="software"): vol.In({
+                    "software": "Софтуерен (Уеб емисии)", 
+                    "hardware": "Хардуерен (Cell Broadcast Модем)"
+                })
             }),
-            vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
-            vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
-        })
+            errors=errors
+        )
 
-        return self.async_show_form(step_id="user", data_schema=data_schema, errors=errors)
+    async def async_step_software_config(self, user_input=None):
+        """Стъпка 2: Избор на община (Появява се само след софтуерен режим)."""
+        if user_input is not None:
+            self.config_data.update(user_input)
+            return self.async_create_entry(
+                title=f"BG-ALERT ({self.config_data['municipality']})", 
+                data=self.config_data
+            )
+
+        return self.async_show_form(
+            step_id="software_config",
+            data_schema=vol.Schema({
+                vol.Required("municipality", default="Всички общини"): vol.In(MUNICIPALITIES),
+                vol.Required("scan_interval", default=30): vol.All(int, vol.Range(min=10, max=3600)),
+            })
+        )
 
     @staticmethod
     @callback
@@ -62,8 +84,9 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
     """Промяна на настройките през бутона Configure."""
     
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Конструктор, който приема нужния на ядрото аргумент."""
+        """Конструкторът вече правилно приема config_entry обекта от ядрото."""
         super().__init__()
+        self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
