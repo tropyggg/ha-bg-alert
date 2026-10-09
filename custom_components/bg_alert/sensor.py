@@ -167,7 +167,7 @@ class BgAlertAllNewsSensor(SensorEntity):
         self._entry_id = entry_id
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
-        self._attr_unique_id = "bg_alert_all_news_archive_global"
+        self._attr_unique_id = f"bg_alert_all_news_archive_{entry_id}"
         self._state = 0
         self._attributes = {"целият_списък": []}
 
