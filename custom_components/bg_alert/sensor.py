@@ -16,16 +16,26 @@ HEADERS = {
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Създаване на трите сензора на база избраната община."""
+    """Създаване на трите сензора без излишно дублиране на глобалния архив."""
     municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
-    entities = [
+        entities = [
         BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td)
+        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td)
     ]
+
+    all_entries = hass.config_entries.async_entries(DOMAIN)
+    is_first_instance = True
+    
+    for existing_entry in all_entries:
+        if existing_entry.entry_id != entry.entry_id and existing_entry.state.value == "loaded":
+            is_first_instance = False
+            break
+
+    if is_first_instance:
+        entities.append(BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td))
 
     async_add_entities(entities, update_before_add=True)
 
@@ -37,9 +47,8 @@ class BgAlertEmergencySensor(SensorEntity):
         self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
-        self._attr_name = "Спешни сигнали"
+        self._attr_translation_key = "emergency_signals"
         self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
-        
         self._state = "Няма активни опасности"
         self._attributes = {"община": municipality, "съобщение": "Всичко е наред"}
 
@@ -80,7 +89,7 @@ class BgAlertEmergencySensor(SensorEntity):
             else:
                 self.reset()
         except Exception as e:
-            _LOGGER.error("Грешка при преглед на аларми: %s", e)
+            _LOGGER.error("Грешка при четене на аларми: %s", e)
             self.reset()
 
     def reset(self):
@@ -89,15 +98,14 @@ class BgAlertEmergencySensor(SensorEntity):
 
 
 class BgAlertNewsSensor(SensorEntity):
-    """Сензор 2: Регионални Тестове за ДНЕС."""
+    """Сензор 2: Регионални Новини и Тестове за ДНЕС."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
-        self._attr_name = "Новини и Тестове"
+        self._attr_translation_key = "news_and_tests"
         self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
-        
         self._state = "Няма днешни тестове"
         self._attributes = {"община": municipality, "информация": "Няма днешни известия"}
 
@@ -154,13 +162,12 @@ class BgAlertNewsSensor(SensorEntity):
 
 
 class BgAlertAllNewsSensor(SensorEntity):
-    """Сензор 3: Архив новини."""
+    """Сензор 3: Единствен глобален архив новини."""
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._attr_has_entity_name = True
-        self._attr_name = "Пълен архив новини"
-        self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
-        
+        self._attr_translation_key = "global_archive"
+        self._attr_unique_id = "bg_alert_all_news_archive_global"
         self._state = 0
         self._attributes = {"целият_списък": []}
 
