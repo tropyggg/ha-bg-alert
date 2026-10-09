@@ -28,6 +28,6 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    hass.config_entries.async_update_entry(entry, title=f"BG-ALERT ({new_municipality})")
+    hass.config_entries.async_update_entry(entry, title=new_municipality)
     
     await hass.config_entries.async_reload(entry.entry_id)
