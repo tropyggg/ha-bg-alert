@@ -89,17 +89,6 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
-            # 1. Взимаме името на общината, която току-що сте избрали от падащото меню
-            chosen_municipality = user_input.get("municipality", "Всички общини")
-            
-            # 2. Обновяваме ЕДНОВРЕМЕННО заглавието И новите опции в главния запис
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, 
-                title=chosen_municipality,  # <--- Сменя името на интеграцията
-                options=user_input          # <--- Записва новите настройки директно тук
-            )
-            
-            # 3. Връщаме празен запис, тъй като вече записахме всичко в горната стъпка
             return self.async_create_entry(title="", data=None)
 
         mode = self.config_entry.data.get("mode", "regional")
