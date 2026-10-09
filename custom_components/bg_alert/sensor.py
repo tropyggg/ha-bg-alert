@@ -159,6 +159,7 @@ class BgAlertAllNewsSensor(SensorEntity):
         self._entry_id = entry_id
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
+        # Динамично Unique ID обвързано с общината на съответната инстанция, за да спре грешката already exists
         self._attr_unique_id = f"bg_alert_all_news_archive_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = 0

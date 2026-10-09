@@ -61,17 +61,23 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
     """Промяна на настройките през бутона Configure."""
     
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Конструктор, който приема нужния на ядрото аргумент."""
+        super().__init__()
+
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        # ПОПРАВКА: Ползваме вградения self.config_entry на Home Assistant нативно
         current_municipality = self.config_entry.options.get(
             "municipality", 
             self.config_entry.data.get("municipality", "Всички общини")
         )
         
-        current_interval = self.config_entry.config_entry.options.get("scan_interval", 30) if hasattr(self, "config_entry") and hasattr(self.config_entry, "config_entry") else self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval", 30))
+        current_interval = self.config_entry.options.get(
+            "scan_interval", 
+            self.config_entry.data.get("scan_interval", 30)
+        )
 
         options_schema = vol.Schema({
             vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),
