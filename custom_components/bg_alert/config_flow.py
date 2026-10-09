@@ -89,13 +89,16 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
+            # 1. Взимаме името на общината, която току-що сте избрали от падащото меню
             chosen_municipality = user_input.get("municipality", "Всички общини")
             
-            # Обновяваме заглавието на самата конфигурация (главния запис)
+            # 2. Директно казваме на Home Assistant да преименува интеграцията
             self.hass.config_entries.async_update_entry(
                 self.config_entry, 
-                title=chosen_municipality
+                title=chosen_municipality  # <--- Променя главното име на интеграцията
             )
+            
+            # 3. Връщаме създаването на записа за опциите с името на общината
             return self.async_create_entry(title="", data=user_input)
 
         mode = self.config_entry.data.get("mode", "regional")
