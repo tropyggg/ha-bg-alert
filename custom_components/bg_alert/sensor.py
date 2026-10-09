@@ -53,7 +53,7 @@ class BgAlertEmergencySensor(SensorEntity):
         self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
-        self._attr_name = "Спешни сигнали"
+        self._attr_translation_key = "emergency_signals"
         self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = "Няма активни опасности"
@@ -111,7 +111,7 @@ class BgAlertNewsSensor(SensorEntity):
         self._municipality = municipality
         self._scan_interval = scan_interval
         self._attr_has_entity_name = True
-        self._attr_name = "Новини и Тестове"
+        self._attr_translation_key = "news_and_tests"
         self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
         
         self._state = "Няма днешни тестове"
@@ -174,7 +174,7 @@ class BgAlertAllNewsSensor(SensorEntity):
     def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._attr_has_entity_name = True
-        self._attr_name = "Пълен архив новини"
+        self._attr_translation_key = "global_archive"
         # Фиксирано ID: Така системата знае, че това е единственият глобален архив
         self._attr_unique_id = "bg_alert_all_news_archive_global"
         

@@ -8,13 +8,7 @@
         "title": "Select BG-ALERT Mode",
         "description": "Choose how the integration should receive hazard data.",
         "data": {
-          "mode": "Operation Mode"
-        }
-      },
-      "software_config": {
-        "title": "Software Mode Setup",
-        "description": "Select your municipality for precise regional alerts.",
-        "data": {
+          "mode": "Operation Mode",
           "municipality": "Municipality to monitor",
           "scan_interval": "Scan interval (seconds)"
         }

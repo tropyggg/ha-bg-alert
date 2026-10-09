@@ -1,0 +1,42 @@
+{
+  "config": {
+    "error": {
+      "hardware_in_development": "⚠️ IN ENTWICKLUNG! Die Hardware-Variante (Cell Broadcast via Modem/SDR) ist noch nicht bereit. Bitte wählen Sie den Software-Modus."
+    },
+    "step": {
+      "user": {
+        "title": "BG-ALERT Modus auswählen",
+        "description": "Wählen Sie aus, wie die Integration Gefahrendaten empfangen soll.",
+        "data": {
+          "mode": "Betriebsmodus",
+          "municipality": "Zu überwachende Gemeinde",
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen ändern",
+        "data": {
+          "municipality": "Zu überwachende Gemeinde",
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "emergency_signals": {
+        "name": "Notfallwarnungen"
+      },
+      "news_and_tests": {
+        "name": "Nachrichten und Tests"
+      },
+      "global_archive": {
+        "name": "Vollständiges Nachrichtenarchiv"
+      }
+    }
+  }
+}
