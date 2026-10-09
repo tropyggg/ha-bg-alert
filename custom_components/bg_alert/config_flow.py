@@ -27,23 +27,22 @@ MUNICIPALITIES = [
 ]
 
 class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Мениджър на първоначалното добавяне."""
+    """Двустъпков мениджър за първоначално добавяне."""
     VERSION = 3
 
     def __init__(self) -> None:
-        """Инициализация на междинната софтуерна памет."""
+        """Инициализация на междинния речник."""
         super().__init__()
         self.config_data = {}
 
     async def async_step_user(self, user_input=None):
-        """Стъпка 1: Избор САМО на хардуерен или софтуерен режим."""
+        """Стъпка 1: Пита САМО за Хардуерен или Софтуерен вариант."""
         errors = {}
         if user_input is not None:
             if user_input["mode"] == "hardware":
                 errors["base"] = "hardware_in_development"
             else:
                 self.config_data["mode"] = "software"
-                # ПРАВИЛНО: Пренасочваме към следващия самостоятелен екран
                 return await self.async_step_software_config()
 
         return self.async_show_form(
@@ -58,7 +57,7 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_software_config(self, user_input=None):
-        """Стъпка 2: Избор на община (Появява се само след софтуерен режим)."""
+        """Стъпка 2: Показва общините само след софтуерен режим."""
         if user_input is not None:
             self.config_data.update(user_input)
             return self.async_create_entry(
@@ -84,14 +83,14 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
     """Промяна на настройките през бутона Configure."""
     
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Конструкторът вече правилно приема config_entry обекта от ядрото."""
+        """Инициализация на родителския клас БЕЗ пренаписване на защитената дума."""
         super().__init__()
-        self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        # Ползваме вградения self.config_entry нативно (Home Assistant сам го пази)
         current_municipality = self.config_entry.options.get(
             "municipality", 
             self.config_entry.data.get("municipality", "Всички общини")
