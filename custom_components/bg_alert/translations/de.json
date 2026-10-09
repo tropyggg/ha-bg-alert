@@ -5,10 +5,16 @@
     },
     "step": {
       "user": {
-        "title": "BG-ALERT Modus auswählen",
-        "description": "Wählen Sie aus, wie die Integration Gefahrendaten empfangen soll.",
+        "title": "BG-ALERT Modul auswählen",
+        "description": "Wählen Sie aus, welche Software- oder Hardwarekomponente Sie Ihrem Smart Home hinzufügen möchten.",
         "data": {
-          "mode": "Betriebsmodus",
+          "mode": "Modus auswählen"
+        }
+      },
+      "software_config": {
+        "title": "Regionale Einstellungen",
+        "description": "Wählen Sie Ihre Gemeinde für eine präzise Filterung der Notfallwarnungen des Innenministeriums.",
+        "data": {
           "municipality": "Zu überwachende Gemeinde",
           "scan_interval": "Aktualisierungsintervall (Sekunden)"
         }
@@ -23,19 +29,6 @@
           "municipality": "Zu überwachende Gemeinde",
           "scan_interval": "Aktualisierungsintervall (Sekunden)"
         }
-      }
-    }
-  },
-  "entity": {
-    "sensor": {
-      "emergency_signals": {
-        "name": "Notfallwarnungen"
-      },
-      "news_and_tests": {
-        "name": "Nachrichten und Tests"
-      },
-      "global_archive": {
-        "name": "Vollständiges Nachrichtenarchiv"
       }
     }
   }

@@ -5,10 +5,16 @@
     },
     "step": {
       "user": {
-        "title": "Seleziona modalità BG-ALERT",
-        "description": "Scegli come l'integrazione deve ricevere i dati sui pericoli.",
+        "title": "Seleziona modulo BG-ALERT",
+        "description": "Scegli quale componente software o hardware desideri aggiungere alla tua casa intelligente.",
         "data": {
-          "mode": "Modalità operativa",
+          "mode": "Seleziona modalità"
+        }
+      },
+      "software_config": {
+        "title": "Impostazioni regionali",
+        "description": "Seleziona il tuo comune per un filtraggio preciso degli allarmi di emergenza del Ministero dell'Interno.",
+        "data": {
           "municipality": "Comune da monitorare",
           "scan_interval": "Intervallo di aggiornamento (secondi)"
         }
@@ -23,19 +29,6 @@
           "municipality": "Comune da monitorare",
           "scan_interval": "Intervallo di aggiornamento (secondi)"
         }
-      }
-    }
-  },
-  "entity": {
-    "sensor": {
-      "emergency_signals": {
-        "name": "Allerte di emergenza"
-      },
-      "news_and_tests": {
-        "name": "Notizie e test"
-      },
-      "global_archive": {
-        "name": "Archivio notizie completo"
       }
     }
   }
