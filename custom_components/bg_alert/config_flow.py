@@ -36,7 +36,6 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input["mode"] == "hardware":
                 errors["base"] = "hardware_in_development"
             else:
-                # Вземаме избора и го заключваме като софтуерна константа
                 return self.async_create_entry(
                     title=f"BG-ALERT ({user_input['municipality']})", 
                     data=user_input
@@ -52,3 +51,31 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         })
 
         return self.async_show_form(step_id="user", data_schema=data_schema, errors=errors)
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return BgAlertOptionsFlowHandler(config_entry)
+
+
+class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
+    """Промяна на настройките през бутона Configure."""
+    
+    async def async_step_init(self, user_input=None):
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        # ПОПРАВКА: Ползваме вградения self.config_entry на Home Assistant нативно
+        current_municipality = self.config_entry.options.get(
+            "municipality", 
+            self.config_entry.data.get("municipality", "Всички общини")
+        )
+        
+        current_interval = self.config_entry.config_entry.options.get("scan_interval", 30) if hasattr(self, "config_entry") and hasattr(self.config_entry, "config_entry") else self.config_entry.options.get("scan_interval", self.config_entry.data.get("scan_interval", 30))
+
+        options_schema = vol.Schema({
+            vol.Required("municipality", default=current_municipality): vol.In(MUNICIPALITIES),
+            vol.Required("scan_interval", default=current_interval): vol.All(int, vol.Range(min=10, max=3600)),
+        })
+
+        return self.async_show_form(step_id="init", data_schema=options_schema)
