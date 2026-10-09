@@ -21,7 +21,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
-        entities = [
+    entities = [
         BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
         BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td)
     ]
