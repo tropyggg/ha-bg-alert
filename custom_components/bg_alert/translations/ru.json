@@ -31,5 +31,18 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "emergency_signals": {
+        "name": "Экстренные сигналы"
+      },
+      "news_and_tests": {
+        "name": "Новости и тесты"
+      },
+      "global_archive": {
+        "name": "Национальный архив"
+      }
+    }
   }
 }

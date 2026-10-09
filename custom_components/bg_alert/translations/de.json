@@ -31,5 +31,18 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "emergency_signals": {
+        "name": "Notfallwarnungen"
+      },
+      "news_and_tests": {
+        "name": "Nachrichten und Tests"
+      },
+      "global_archive": {
+        "name": "Nationales Archiv"
+      }
+    }
   }
 }

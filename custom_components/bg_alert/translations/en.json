@@ -31,5 +31,18 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "emergency_signals": {
+        "name": "Emergency alerts"
+      },
+      "news_and_tests": {
+        "name": "News and tests"
+      },
+      "global_archive": {
+        "name": "National archive"
+      }
+    }
   }
 }
