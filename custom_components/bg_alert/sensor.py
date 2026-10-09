@@ -16,26 +16,17 @@ HEADERS = {
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Създаване на трите сензора без излишно дублиране на глобалния архив."""
+    """Създаване на трите сензора на база избраната община."""
     municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
+    # Директно създаваме и трите сензора - софтуерно чисто и бързо
     entities = [
         BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td),
-        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td)
+        BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td),
+        BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td)
     ]
-
-    all_entries = hass.config_entries.async_entries(DOMAIN)
-    is_first_instance = True
-    
-    for existing_entry in all_entries:
-        if existing_entry.entry_id != entry.entry_id and existing_entry.state.value == "loaded":
-            is_first_instance = False
-            break
-
-    if is_first_instance:
-        entities.append(BgAlertAllNewsSensor(entry.entry_id, municipality, scan_interval_td))
 
     async_add_entities(entities, update_before_add=True)
 
