@@ -99,7 +99,7 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
             )
             
             # 3. Връщаме създаването на записа за опциите с името на общината
-            return self.async_create_entry(title="", data=user_input)
+            return self.async_create_entry(title="tara", data=user_input)
 
         mode = self.config_entry.data.get("mode", "regional")
         if mode == "archive":
