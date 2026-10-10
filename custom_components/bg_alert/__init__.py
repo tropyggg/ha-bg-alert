@@ -28,7 +28,13 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    translated_municipality = entry.mock_property("title") or "Не зима превода"
+        # 1. Изтегляме преводите за нашата интеграция от bg.json (или en.json спрямо езика на HA)
+    translations = await hass.helpers.translation.async_get_translations(
+        hass.config.language, "title", [DOMAIN]
+    )
+    
+    # 2. Взимаме преведената дума (ако липсва по някаква причина, слагаме "Община" като резервен вариант)
+    translated_title = translations.get(f"component.{DOMAIN}.title", "лалала")
 
     hass.config_entries.async_update_entry(entry, title=f"{translated_municipality} {new_municipality}")
     
