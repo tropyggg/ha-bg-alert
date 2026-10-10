@@ -1,5 +1,5 @@
 {
-  "title": "Община {municipality}",
+  "title": "Община",
   "config": {
     "error": {
       "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант (с клетъчно излъчване през модем/SDR) все още не е готов. Моля, изберете софтуерния режим."
@@ -34,7 +34,6 @@
     }
   },
   "entity": {
-    "title": "Община {municipality}",
     "sensor": {
       "emergency_signals": {
         "name": "Спешни сигнали"
