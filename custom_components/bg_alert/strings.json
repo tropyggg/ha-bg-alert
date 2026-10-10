@@ -26,8 +26,8 @@
       }
     }
   },
-  "title": "Municipality {municipality}",
   "entity": {
+    "title": "Municipality {municipality}",
     "sensor": {
       "emergency_signals": {
         "name": "Спешни сигнали"
