@@ -32,8 +32,8 @@
       }
     }
   },
+  "title": "Община",
   "entity": {
-    "title": "Община",
     "sensor": {
       "emergency_signals": {
         "name": "Спешни сигнали"
