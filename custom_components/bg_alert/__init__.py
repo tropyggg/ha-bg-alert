@@ -28,6 +28,8 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    hass.config_entries.async_update_entry(entry, title=new_municipality)
+    translated_municipality = entry.mock_property("title") or "Не зима превода"
+
+    hass.config_entries.async_update_entry(entry, title=f"{translated_municipality} {new_municipality}")
     
     await hass.config_entries.async_reload(entry.entry_id)

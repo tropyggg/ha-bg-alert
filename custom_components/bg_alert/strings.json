@@ -1,6 +1,6 @@
 {
   "config": {
-    "title": "Община {municipality}",
+    "title": "Община",
     "error": {
       "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант все още не е готов."
     },
