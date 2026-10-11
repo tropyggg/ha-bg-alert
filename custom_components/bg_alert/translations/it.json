@@ -1,6 +1,7 @@
 {
   "config": {
     "error": {
+      "municipality_title": "Comune",
       "hardware_in_development": "⚠️ IN SVILUPPO! La variante hardware (Cell Broadcast via modem/SDR) non è ancora pronta. Si prega di scegliere la modalità software."
     },
     "step": {
