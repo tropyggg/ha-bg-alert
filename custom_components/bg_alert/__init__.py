@@ -36,7 +36,7 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         # Взимаме преведената дума от новия ни ключ
         prefix = translations.get(f"component.{DOMAIN}.config.municipality_title", "Municipality")
     except Exception:
-        prefix = "Municipality"
+        prefix = "Municipality1"
     
     # Сглобяваме заглавието на екрана
     hass.config_entries.async_update_entry(entry, title=f"{prefix} {new_municipality}")
