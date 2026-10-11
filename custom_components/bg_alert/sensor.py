@@ -23,12 +23,22 @@ async def async_setup_entry(hass, entry, async_add_entities):
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
+    # 1. Взимаме избрания в момента език на Home Assistant
+    lang = hass.config.language if hass.config.language else "en"
+    
+    # 2. Изтегляме таблицата с преводи от JSON файловете на интеграцията
+    translations = await async_get_translations(hass, lang, "config", [DOMAIN])
+
     entities = []
 
     if mode == "archive":
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
         entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
     else:
+        # Ако е регионален режим, взимаме думата "Община" и я залепяме пред името
+        translated_municipality_word = translations.get(f"component.{DOMAIN}.config.municipality_title", "Municipality")
+        hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
+        
         _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
         entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
