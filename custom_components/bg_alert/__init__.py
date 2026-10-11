@@ -28,7 +28,7 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-try:
+    try:
         # Изтегляме автоматично преводите за секция "config" спрямо текущия език на HA
         translations = await hass.helpers.translation.async_get_translations(
             hass.config.language, "config", [DOMAIN]
