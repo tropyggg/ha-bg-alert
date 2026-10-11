@@ -29,16 +29,26 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    current_language = hass.config.language if hass.config.language else "en"
-    translations = await async_get_translations(
-        hass, 
-        current_language, 
-        "config", 
-        ["bg_alert"]
-    )
-    translation_key = f"component.bg_alert.config.municipality_title"
-    translated_word = translations.get(translation_key, "Municipality")
+    #current_language = hass.config.language if hass.config.language else "en"
+    #translations = await async_get_translations(
+    #    hass, 
+    #    current_language, 
+    #    "config", 
+    #    ["bg_alert"]
+    #)
+    #translation_key = f"component.bg_alert.config.municipality_title"
+    #translated_word = translations.get(translation_key, "Municipality")
 
-    hass.config_entries.async_update_entry(entry, title=f"{translated_word} {new_municipality}")
+   # hass.config_entries.async_update_entry(entry, title=f"{translated_word} {new_municipality}")
+
+       hass.config_entries.async_update_entry(
+        entry,
+        data={
+            **entry.data,
+            "municipality": new_municipality,
+            "scan_interval": new_scan_interval,
+        },
+        options={} # Изчистваме опциите, след като сме ги прехвърлили в data
+    )
 
     await hass.config_entries.async_reload(entry.entry_id)
