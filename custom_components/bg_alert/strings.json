@@ -1,16 +1,22 @@
 {
   "config": {
     "error": {
-      "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант все още не е готов."
+      "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose a software mode."
     },
     "step": {
       "user": {
-        "title": "Избор на режим за BG-ALERT",
-        "description": "Изберете как интеграцията да получава данни за опасности.",
+        "title": "Select BG-ALERT module",
+        "description": "Choose how the integration should receive hazard data.",
         "data": {
-          "mode": "Режим на работа",
-          "municipality": "Община за следене",
-          "scan_interval": "Интервал на опресняване (секунди)"
+          "mode": "Operation mode"
+        }
+      },
+      "software_config": {
+        "title": "Regional settings",
+        "description": "Select municipality to monitor.",
+        "data": {
+          "municipality": "Municipality to monitor",
+          "scan_interval": "Scan interval (seconds)"
         }
       }
     }
@@ -18,25 +24,16 @@
   "options": {
     "step": {
       "init": {
-        "title": "Промяна на настройките",
-        "municipality_title": "Municipality",
+        "title": "Change settings",
         "data": {
-          "municipality": "Община за следене",
-          "scan_interval": "Интервал на опресняване (секунди)"
+          "municipality": {
+            "name": "Municipality to monitor",
+            "selector": {
+              "title": "Municipality"
+            }
+          },
+          "scan_interval": "Scan interval (seconds)"
         }
-      }
-    }
-  },
-  "entity": {
-    "sensor": {
-      "emergency_signals": {
-        "name": "Спешни сигнали"
-      },
-      "news_and_tests": {
-        "name": "Новини и тестове"
-      },
-      "global_archive": {
-        "name": "Национален архив"
       }
     }
   }

@@ -29,16 +29,19 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
     try:
-        # Изтегляме автоматично преводите за секция "options" спрямо езика на HA
+        # Изтегляме автоматично преводите за опциите от работещата памет
         translations = await hass.helpers.translation.async_get_translations(
             hass.config.language, "options", [DOMAIN]
         )
-        # Взимаме думата от правилния път в структурата на проекта
-        prefix = translations.get(f"component.{DOMAIN}.options.step.init.municipality_title", "Municipality")
+        # Взимаме напълно отделното име от селектора на общината
+        prefix = translations.get(
+            f"component.{DOMAIN}.options.step.init.data.municipality.selector.title", 
+            "Municipality"
+        )
     except Exception:
         prefix = "Municipality"
     
-    # Сглобяваме заглавието на екрана
+    # Сглобяваме заглавието с напълно независимото име
     hass.config_entries.async_update_entry(entry, title=f"{prefix} {new_municipality}")
     
     await hass.config_entries.async_reload(entry.entry_id)
