@@ -26,6 +26,7 @@
     "step": {
       "init": {
         "title": "Промяна на настройките",
+        "municipality_title": "Община",
         "data": {
           "municipality": "Община за следене",
           "scan_interval": "Интервал на опресняване (секунди)"

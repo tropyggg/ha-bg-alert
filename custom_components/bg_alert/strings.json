@@ -1,6 +1,5 @@
 {
   "config": {
-    "municipality_title": "Municipality",
     "error": {
       "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант все още не е готов."
     },
@@ -20,6 +19,7 @@
     "step": {
       "init": {
         "title": "Промяна на настройките",
+        "municipality_title": "Municipality",
         "data": {
           "municipality": "Община за следене",
           "scan_interval": "Интервал на опресняване (секунди)"
