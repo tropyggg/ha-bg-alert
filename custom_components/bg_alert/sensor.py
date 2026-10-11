@@ -57,16 +57,9 @@ class BgAlertEmergencySensor(SensorEntity):
 
     @property
     def device_info(self):
-        translation_key = "component.bg_alert.config.municipality_title"
-        
-        translated_word = "Municipality" # Стойност по подразбиране (fallback)
-        
-        if hasattr(self, "platform") and self.platform and hasattr(self.platform, "platform_translations"):
-            translated_word = self.platform.platform_translations.get(translation_key, "Municipality")
-       
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name=f"{translated_word} {self._municipality}",
+            name=self._municipality,
             manufacturer="Министерство на вътрешните работи",
         )
 
