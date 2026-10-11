@@ -115,20 +115,9 @@ class BgAlertNewsSensor(SensorEntity):
 
     @property
     def device_info(self):
-
-        # 1. Проверяваме дали платформата има заредени преводи
-        # Структурата на ключа е същата, която дефинирахме в JSON файловете
-        translation_key = "component.bg_alert.config.municipality_title"
-        
-        # Опитваме се да вземем думата от заредените в момента преводи в HA
-        translated_word = "ne q zima" # Стойност по подразбиране (fallback)
-        
-        if hasattr(self, "platform") and self.platform and hasattr(self.platform, "platform_translations"):
-            translated_word = self.platform.platform_translations.get(translation_key, "Municipality")
-
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name=f"{translated_word} {self._municipality}",
+            name=self._municipality,
             manufacturer="Министерство на вътрешните работи",
         )
 
