@@ -14,24 +14,9 @@
       "software_config": {
         "title": "Regional settings",
         "description": "Select municipality to monitor.",
+        "municipality_title": "Municipality",
         "data": {
           "municipality": "Municipality to monitor",
-          "scan_interval": "Scan interval (seconds)"
-        }
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Change settings",
-        "data": {
-          "municipality": {
-            "name": "Municipality to monitor",
-            "selector": {
-              "title": "Municipality"
-            }
-          },
           "scan_interval": "Scan interval (seconds)"
         }
       }
