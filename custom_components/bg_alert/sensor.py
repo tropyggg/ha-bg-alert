@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.util import dt as dt_util
+from homeassistant.helpers.translation import async_get_translations
 
 DOMAIN = "bg_alert"
 _LOGGER = logging.getLogger(__name__)
@@ -54,11 +55,21 @@ class BgAlertEmergencySensor(SensorEntity):
     @property
     def extra_state_attributes(self): return self._attributes
 
+    current_language = hass.config.language if hass.config.language else "en"
+    translations = await async_get_translations(
+        hass, 
+        current_language, 
+        "config", 
+        ["bg_alert"]
+    )
+    translation_key = f"component.bg_alert.config.municipality_title"
+    translated_word = translations.get(translation_key, "Municipality")
+
     @property
     def device_info(self):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
-            name=self._municipality,
+            name=f"{translated_word} {self._municipality}",
             manufacturer="Министерство на вътрешните работи",
         )
 
