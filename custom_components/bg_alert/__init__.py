@@ -39,6 +39,6 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     #translation_key = f"component.bg_alert.config.municipality_title"
     #translated_word = translations.get(translation_key, "Municipality")
 
-    hass.config_entries.async_update_entry(entry, title=f"{translated_word} {new_municipality}")
+    hass.config_entries.async_update_entry(entry, title="")
 
     await hass.config_entries.async_reload(entry.entry_id)
