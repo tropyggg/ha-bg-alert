@@ -28,7 +28,7 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    translated_title = entry.mock_property("title") or "не зима прревод"
+    translated_title = entry.mock_property("title") or "Община"
     
     # 2. Сглобяваме динамично заглавието
     hass.config_entries.async_update_entry(entry, title=f"{translated_title} {new_municipality}")
