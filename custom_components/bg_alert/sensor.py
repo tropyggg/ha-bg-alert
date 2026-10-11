@@ -55,18 +55,15 @@ class BgAlertEmergencySensor(SensorEntity):
     @property
     def extra_state_attributes(self): return self._attributes
 
-    current_language = hass.config.language if hass.config.language else "en"
-    translations = await async_get_translations(
-        hass, 
-        current_language, 
-        "config", 
-        ["bg_alert"]
-    )
-    translation_key = f"component.bg_alert.config.municipality_title"
-    translated_word = translations.get(translation_key, "Municipality")
-
     @property
     def device_info(self):
+        translation_key = "component.bg_alert.config.municipality_title"
+        
+        translated_word = "Municipality" # Стойност по подразбиране (fallback)
+        
+        if hasattr(self, "platform") and self.platform and hasattr(self.platform, "platform_translations"):
+            translated_word = self.platform.platform_translations.get(translation_key, "Municipality")
+       
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             name=f"{translated_word} {self._municipality}",
