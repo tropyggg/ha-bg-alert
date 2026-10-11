@@ -34,9 +34,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
     if mode == "archive":
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
         entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
+    elif municipality == "Всички общини":
+        # Режим за цялата страна (за избягване на "Община Всички общини")
+        translated_all = translations.get(f"component.{DOMAIN}.config.all_municipalities_title", "All Municipalities")
+        hass.config_entries.async_update_entry(entry, title=translated_all)
+        
+        _LOGGER.info("Зареждане на Регионални сензори за опасности на НАЦИОНАЛНО ниво.")
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
+        
     else:
-
-        # Ако е регионален режим, взимаме думата "Община" и я залепяме пред името
+        # Режим за конкретна община (например "Община Пазарджик")
         translated_municipality_word = translations.get(f"component.{DOMAIN}.config.municipality_title", "Municipality")
         hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
         
@@ -45,7 +53,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
 
     async_add_entities(entities, update_before_add=True)
-
 
 class BgAlertEmergencySensor(SensorEntity):
     """Сензор 1: Регионални спешни сигнали."""
