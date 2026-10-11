@@ -28,31 +28,6 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     
     new_municipality = entry.options.get("municipality", entry.data.get("municipality", "Всички общини"))
     
-    # Резервна дума по подразбиране
-    prefix = "Municipality"
-    
-    try:
-        # Взимаме текущия език на Home Assistant (напр. "bg", "en", "de")
-        lang = hass.config.language
-        
-        # Намираме пътя до папката на нашата интеграция
-        current_dir = os.path.dirname(__file__)
-        json_path = os.path.join(current_dir, "translations", f"{lang}.json")
-        
-        # Ако файлът за този език не съществува, използваме strings.json като шаблон
-        if not os.path.exists(json_path):
-            json_path = os.path.join(current_dir, "strings.json")
-            
-        # Отваряме и прочитаме файла директно от диска
-        with open(json_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            # Изваждаме думата директно от структурата на JSON файла
-            prefix = data["config"]["step"]["software_config"]["municipality_title"]
-    except Exception as e:
-        _LOGGER.warning("Неуспешно извличане на превод от JSON файла: %s", e)
-        prefix = "Municipality"
-    
-    # Сглобяваме заглавието на екрана с реално прочетения превод
-    hass.config_entries.async_update_entry(entry, title=f"{prefix} {new_municipality}")
+    hass.config_entries.async_update_entry(entry, title=f"Municipality {new_municipality}")
 
     await hass.config_entries.async_reload(entry.entry_id)

@@ -25,7 +25,6 @@
     "step": {
       "init": {
         "title": "Change Settings",
-        "municipality_title": "Municipality",
         "data": {
           "municipality": "Municipality to monitor",
           "scan_interval": "Scan interval (seconds)"
