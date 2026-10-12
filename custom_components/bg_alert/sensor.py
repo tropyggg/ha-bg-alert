@@ -49,7 +49,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         hass.config_entries.async_update_entry(entry, title=translated_all)
         
         _LOGGER.info("Зареждане на Регионални сензори за опасности на НАЦИОНАЛНО ниво.")
-        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         
     else:
@@ -58,7 +58,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
         
         _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
-        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
 
     async_add_entities(entities, update_before_add=True)
