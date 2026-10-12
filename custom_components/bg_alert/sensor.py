@@ -23,13 +23,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     scan_interval = entry.options.get("scan_interval", entry.data.get("scan_interval", 30))
     scan_interval_td = timedelta(seconds=scan_interval)
 
-    # 1. Взимаме избрания в момента език на Home Assistant
     lang = hass.config.language if hass.config.language else "en"
-    
-    # 2. Изтегляме таблицата с преводи от JSON файловете на интеграцията
     translations = await async_get_translations(hass, lang, "config", [DOMAIN])
-
-    # 3. Изтегляне на превода за Manufacturer 
     translated_manufacturer = translations.get(
         f"component.{DOMAIN}.config.manufacturer_title", 
         "Ministry of the Interior"
@@ -44,19 +39,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
         entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td, translated_manufacturer))
     elif municipality == "Всички общини":
-        # Режим за цялата страна (за избягване на "Община Всички общини")
         translated_all = translations.get(f"component.{DOMAIN}.config.all_municipalities_title", "All Municipalities")
         hass.config_entries.async_update_entry(entry, title=translated_all)
-        
         _LOGGER.info("Зареждане на Регионални сензори за опасности на НАЦИОНАЛНО ниво.")
         entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         
     else:
-        # Режим за конкретна община (например "Община Пазарджик")
         translated_municipality_word = translations.get(f"component.{DOMAIN}.config.municipality_title", "Municipality")
         hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
-        
         _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
         entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
