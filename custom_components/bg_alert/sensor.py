@@ -65,14 +65,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 class BgAlertEmergencySensor(SensorEntity):
     """Сензор 1: Регионални спешни сигнали."""
-    def __init__(self, entry_id, municipality, scan_interval):
+    def __init__(self, entry_id, municipality, scan_interval, manufacturer):
         self._entry_id = entry_id
         self._municipality = municipality
         self._scan_interval = scan_interval
+        self._manufacturer = manufacturer     
         self._attr_has_entity_name = True
         self._attr_translation_key = "emergency_signals"
         self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
-        
         self._state = "Няма активни опасности"
         self._attributes = {"община": municipality, "съобщение": "Всичко е наред"}
 
@@ -123,14 +123,14 @@ class BgAlertEmergencySensor(SensorEntity):
 
 class BgAlertNewsSensor(SensorEntity):
     """Сензор 2: Регионални Новини и Тестове за ДНЕС."""
-    def __init__(self, entry_id, municipality, scan_interval):
+    def __init__(self, entry_id, municipality, scan_interval, manufacturer):
         self._entry_id = entry_id
         self._municipality = municipality
         self._scan_interval = scan_interval
+        self._manufacturer = manufacturer
         self._attr_has_entity_name = True
         self._attr_translation_key = "news_and_tests"
         self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
-        
         self._state = "Няма днешни тестове"
         self._attributes = {"община": municipality, "информация": "Няма днешни известия"}
 
@@ -192,13 +192,13 @@ class BgAlertNewsSensor(SensorEntity):
 
 class BgAlertAllNewsSensor(SensorEntity):
     """Сензор 3: Глобален национален архив новини (Добавя се отделно)."""
-    def __init__(self, entry_id, scan_interval):
+    def __init__(self, entry_id, scan_interval, manufacturer):
         self._entry_id = entry_id
         self._scan_interval = scan_interval
+        self._manufacturer = manufacturer
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
         self._attr_unique_id = "bg_alert_national_archive_module"
-        
         self._state = 0
         self._attributes = {"целият_списък": []}
 
