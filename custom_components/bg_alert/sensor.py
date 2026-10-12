@@ -34,7 +34,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     if mode == "archive":
         translated_archive = translations.get(f"component.{DOMAIN}.config.archive_title", "National Archive")
         hass.config_entries.async_update_entry(entry, title=translated_archive)
-        
+
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
         entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
     elif municipality == "Всички общини":
@@ -204,7 +204,10 @@ class BgAlertAllNewsSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry_id)},
+            manufacturer="Министерство на вътрешните работи",
+            )
 
     async def async_update(self):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
