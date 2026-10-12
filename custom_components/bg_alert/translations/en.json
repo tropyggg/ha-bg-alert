@@ -3,6 +3,7 @@
     "municipality_title": "Municipality",
     "archive_title": "National Archive News",
     "all_municipalities_title": "All Municipalities",
+    "manufacturer_title": "Ministry of the Interior",
     "error": {
       "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose a software mode."
     },
