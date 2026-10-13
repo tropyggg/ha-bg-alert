@@ -15,7 +15,7 @@
           "mode": "Select Mode"
         }
       },
-      "software_config": {
+      "software": {
         "title": "Regional Settings",
         "description": "Select your municipality for precise filtering of emergency alerts from the MoI.",
         "data": {
