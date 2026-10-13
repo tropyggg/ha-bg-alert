@@ -5,22 +5,16 @@
     "all_municipalities_title": "All Municipalities",
     "manufacturer_title": "Ministry of the Interior",
     "error": {
-      "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose a software mode."
+      "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант все още не е готов."
     },
     "step": {
       "user": {
-        "title": "Select BG-ALERT Module",
-        "description": "Choose which software or hardware component you want to add to your smart home.",
+        "title": "Избор на режим за BG-ALERT",
+        "description": "Изберете как интеграцията да получава данни за опасности.",
         "data": {
-          "mode": "Select Mode"
-        }
-      },
-      "software": {
-        "title": "Regional Settings",
-        "description": "Select your municipality for precise filtering of emergency alerts from the MoI.",
-        "data": {
-          "municipality": "Municipality to monitor",
-          "scan_interval": "Scan interval (seconds)"
+          "mode": "Режим на работа",
+          "municipality": "Община за следене",
+          "scan_interval": "Интервал на опресняване (секунди)"
         }
       }
     }
@@ -28,10 +22,10 @@
   "options": {
     "step": {
       "init": {
-        "title": "Change Settings",
+        "title": "Промяна на настройките",
         "data": {
-          "municipality": "Municipality to monitor",
-          "scan_interval": "Scan interval (seconds)"
+          "municipality": "Община за следене",
+          "scan_interval": "Интервал на опресняване (секунди)"
         }
       }
     }
@@ -39,13 +33,13 @@
   "entity": {
     "sensor": {
       "emergency_signals": {
-        "name": "Emergency alerts"
+        "name": "Спешни сигнали"
       },
       "news_and_tests": {
-        "name": "News and tests"
+        "name": "Новини и тестове"
       },
       "global_archive": {
-        "name": "National archive"
+        "name": "Национален архив"
       }
     }
   }
