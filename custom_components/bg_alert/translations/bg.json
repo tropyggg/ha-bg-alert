@@ -1,26 +1,26 @@
 {
   "config": {
-    "municipality_title": "Municipality",
-    "archive_title": "National Archive News",
-    "all_municipalities_title": "All Municipalities",
-    "manufacturer_title": "Ministry of the Interior",
+    "municipality_title": "Община",
+    "archive_title": "Национален архив",
+    "all_municipalities_title": "Всички общини",
+    "manufacturer_title": "Министерство на вътрешните работи",
     "error": {
-      "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose a software mode."
+      "hardware_in_development": "⚠️ В ПРОЦЕС НА РАЗРАБОТКА! Хардуерният вариант (Cell Broadcast чрез модем/SDR) все още не е готов. Моля, изберете софтуерен режим."
     },
     "step": {
       "user": {
-        "title": "Select BG-ALERT Module",
-        "description": "Choose which software or hardware component you want to add to your smart home.",
+        "title": "Избор на модул на BG-ALERT",
+        "description": "Изберете кой софтуерен или хардуерен компонент искате да добавите към вашия умен дом.",
         "data": {
-          "mode": "Select Mode"
+          "mode": "Избор на режим"
         }
       },
       "software": {
-        "title": "Regional Settings",
-        "description": "Select your municipality for precise filtering of emergency alerts from the MoI.",
+        "title": "Регионални настройки",
+        "description": "Изберете вашата община за точно филтриране на спешните сигнали от МВР.",
         "data": {
-          "municipality": "Municipality to monitor",
-          "scan_interval": "Scan interval (seconds)"
+          "municipality": "Община за наблюдение",
+          "scan_interval": "Интервал на проверка (секунди)"
         }
       }
     }
@@ -28,24 +28,30 @@
   "options": {
     "step": {
       "init": {
-        "title": "Change Settings",
+        "title": "Промяна на настройките",
         "data": {
-          "municipality": "Municipality to monitor",
-          "scan_interval": "Scan interval (seconds)"
+          "municipality": "Община за наблюдение",
+          "scan_interval": "Интервал на проверка (секунди)"
         }
       }
+    }
+  },
+  "device": {
+    "bg_alert_device": {
+      "name": "BG-ALERT",
+      "manufacturer": "Министерство на вътрешните работи"
     }
   },
   "entity": {
     "sensor": {
       "emergency_signals": {
-        "name": "Emergency alerts"
+        "name": "Спешни известия"
       },
       "news_and_tests": {
-        "name": "News and tests"
+        "name": "Новини и тестове"
       },
       "global_archive": {
-        "name": "National archive"
+        "name": "Национален архив"
       }
     }
   }
