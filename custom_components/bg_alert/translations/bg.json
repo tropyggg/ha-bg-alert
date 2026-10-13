@@ -36,12 +36,6 @@
       }
     }
   },
-  "device": {
-    "bg_alert_device": {
-      "name": "BG-ALERT",
-      "manufacturer": "Министерство на вътрешните работи"
-    }
-  },
   "entity": {
     "sensor": {
       "emergency_signals": {
