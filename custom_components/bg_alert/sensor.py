@@ -25,10 +25,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     lang = hass.config.language if hass.config.language else "en"
     translations = await async_get_translations(hass, lang, "config", [DOMAIN])
-    translated_manufacturer = translations.get(
-        f"component.{DOMAIN}.config.manufacturer_title", 
-        "Ministry of the Interior"
-    )
 
     entities = []
 
@@ -36,31 +32,30 @@ async def async_setup_entry(hass, entry, async_add_entities):
         translated_archive = translations.get(f"component.{DOMAIN}.config.archive_title", "National Archive")
         hass.config_entries.async_update_entry(entry, title=translated_archive)
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
-        entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td, translated_manufacturer))
+        entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
     
     elif municipality == "Всички общини":
         translated_all = translations.get(f"component.{DOMAIN}.config.all_municipalities_title", "All Municipalities")
         hass.config_entries.async_update_entry(entry, title=translated_all)
         _LOGGER.info("Зареждане на Регионални сензори за опасности на НАЦИОНАЛНО ниво.")
-        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
-        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
         
     else:
         translated_municipality_word = translations.get(f"component.{DOMAIN}.config.municipality_title", "Municipality")
         hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
         _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
-        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
-        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td, translated_manufacturer))
+        entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
+        entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
 
     async_add_entities(entities, update_before_add=True)
 
 class BgAlertEmergencySensor(SensorEntity):
     """Сензор 1: Регионални спешни сигнали."""
-    def __init__(self, entry_id, municipality, scan_interval, manufacturer):
+    def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
         self._scan_interval = scan_interval
-        self._manufacturer = manufacturer     
         self._attr_has_entity_name = True
         self._attr_translation_key = "emergency_signals"
         self._attr_unique_id = f"bg_alert_emergency_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
@@ -78,7 +73,7 @@ class BgAlertEmergencySensor(SensorEntity):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             name=self._municipality,
-            manufacturer=self._manufacturer,
+            manufacturer="",
         )
 
     async def async_update(self):
@@ -114,11 +109,10 @@ class BgAlertEmergencySensor(SensorEntity):
 
 class BgAlertNewsSensor(SensorEntity):
     """Сензор 2: Регионални Новини и Тестове за ДНЕС."""
-    def __init__(self, entry_id, municipality, scan_interval, manufacturer):
+    def __init__(self, entry_id, municipality, scan_interval):
         self._entry_id = entry_id
         self._municipality = municipality
         self._scan_interval = scan_interval
-        self._manufacturer = manufacturer
         self._attr_has_entity_name = True
         self._attr_translation_key = "news_and_tests"
         self._attr_unique_id = f"bg_alert_news_{municipality.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
@@ -136,7 +130,7 @@ class BgAlertNewsSensor(SensorEntity):
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             name=self._municipality,
-            manufacturer=self._manufacturer,
+            manufacturer="",
         )
 
     async def async_update(self):
@@ -183,10 +177,9 @@ class BgAlertNewsSensor(SensorEntity):
 
 class BgAlertAllNewsSensor(SensorEntity):
     """Сензор 3: Глобален национален архив новини (Добавя се отделно)."""
-    def __init__(self, entry_id, scan_interval, manufacturer):
+    def __init__(self, entry_id, scan_interval):
         self._entry_id = entry_id
         self._scan_interval = scan_interval
-        self._manufacturer = manufacturer
         self._attr_has_entity_name = True
         self._attr_translation_key = "global_archive"
         self._attr_unique_id = "bg_alert_national_archive_module"
@@ -201,10 +194,7 @@ class BgAlertAllNewsSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._entry_id)},
-            manufacturer=self._manufacturer,
-            )
+        return DeviceInfo(identifiers={(DOMAIN, self._entry_id)})
 
     async def async_update(self):
         url = "https://bg-alert.bg/bg-alert-ws/public/news/atom"
