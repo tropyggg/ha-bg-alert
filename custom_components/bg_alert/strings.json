@@ -11,9 +11,15 @@
         "title": "Избор на режим за BG-ALERT",
         "description": "Изберете как интеграцията да получава данни за опасности.",
         "data": {
-          "mode": "Режим на работа",
-          "municipality": "Община за следене",
-          "scan_interval": "Интервал на опресняване (секунди)"
+          "mode": "Режим на работа"
+        }
+      },
+      "software_config": {
+        "title": "Regional Settings",
+        "description": "Select your municipality for precise filtering of emergency alerts from the MoI.",
+        "data": {
+          "municipality": "Municipality to monitor",
+          "scan_interval": "Scan interval (seconds)"
         }
       }
     }
