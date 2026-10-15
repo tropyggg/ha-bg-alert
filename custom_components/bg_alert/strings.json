@@ -4,14 +4,14 @@
     "archive_title": "National Archive News",
     "all_municipalities_title": "All Municipalities",
     "error": {
-      "hardware_in_development": "⚠️ В РАЗРАБОТКА! Хардуерният вариант все още не е готов."
+      "hardware_in_development": "⚠️ UNDER DEVELOPMENT! The hardware variant (Cell Broadcast via modem/SDR) is not ready yet. Please choose a software mode."
     },
     "step": {
       "user": {
-        "title": "Избор на режим за BG-ALERT",
-        "description": "Изберете как интеграцията да получава данни за опасности.",
+        "title": "Select BG-ALERT Module",
+        "description": "Choose which software or hardware component you want to add to your smart home.",
         "data": {
-          "mode": "Режим на работа"
+          "mode": "Select Mode"
         }
       },
       "software_config": {
@@ -27,10 +27,10 @@
   "options": {
     "step": {
       "init": {
-        "title": "Промяна на настройките",
+        "title": "Change Settings",
         "data": {
-          "municipality": "Община за следене",
-          "scan_interval": "Интервал на опресняване (секунди)"
+          "municipality": "Municipality to monitor",
+          "scan_interval": "Scan interval (seconds)"
         }
       }
     }
@@ -38,13 +38,13 @@
   "entity": {
     "sensor": {
       "emergency_signals": {
-        "name": "Спешни сигнали"
+        "name": "Emergency alerts"
       },
       "news_and_tests": {
-        "name": "Новини и тестове"
+        "name": "News and tests"
       },
       "global_archive": {
-        "name": "Национален архив"
+        "name": "National archive"
       }
     }
   }
