@@ -42,7 +42,7 @@ class BgAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "hardware_in_development"
             elif user_input["mode"] == "archive":
                 self.config_data = {"mode": "archive", "municipality": "Национален", "scan_interval": 60}
-                return self.async_create_entry(title="", data=self.config_data)
+                return self.async_create_entry(title="BG-ALERT", data=self.config_data)
             else:
                 self.config_data["mode"] = "regional"
                 return await self.async_step_software_config()
@@ -89,7 +89,7 @@ class BgAlertOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
+            return self.async_create_entry(title="BG-ALERT", data=user_input)
 
         mode = self.config_entry.data.get("mode", "regional")
         if mode == "archive":
