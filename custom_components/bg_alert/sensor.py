@@ -29,20 +29,20 @@ async def async_setup_entry(hass, entry, async_add_entities):
     entities = []
 
     if mode == "archive":
-        translated_archive = translations.get("archive_title", translations.get(f"component.{DOMAIN}.config.archive_title", "Национален архив"))
+        translated_archive = translations.get("archive_title", translations.get(f"component.{DOMAIN}.config.archive_title"))
         hass.config_entries.async_update_entry(entry, title=translated_archive)
         _LOGGER.info("Зареждане на Самостоятелен Национален Архив Новини.")
         entities.append(BgAlertAllNewsSensor(entry.entry_id, scan_interval_td))
     
     elif municipality == "Всички общини":
-        translated_all = translations.get("all_municipalities_title", translations.get(f"component.{DOMAIN}.config.all_municipalities_title", "Всички общини"))
+        translated_all = translations.get("all_municipalities_title", translations.get(f"component.{DOMAIN}.config.all_municipalities_title))
         hass.config_entries.async_update_entry(entry, title=translated_all)
         _LOGGER.info("Зареждане на Регионални сензори за опасности на НАЦИОНАЛНО ниво.")
         entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
         entities.append(BgAlertNewsSensor(entry.entry_id, municipality, scan_interval_td))
         
     else:
-        translated_municipality_word = translations.get("municipality_title", translations.get(f"component.{DOMAIN}.config.municipality_title", "Община"))
+        translated_municipality_word = translations.get("municipality_title", translations.get(f"component.{DOMAIN}.config.municipality_title"))
         hass.config_entries.async_update_entry(entry, title=f"{translated_municipality_word} {municipality}")
         _LOGGER.info("Зареждане на Регионални сензори за опасности за: %s", municipality)
         entities.append(BgAlertEmergencySensor(entry.entry_id, municipality, scan_interval_td))
